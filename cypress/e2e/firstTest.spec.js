@@ -267,7 +267,7 @@ describe("First test suite", () => {
       });
   });
 
-  it.only("lists and dropdowns 27", () => {
+  it("lists and dropdowns 27", () => {
     cy.visit("/");
 
     //1
@@ -288,5 +288,107 @@ describe("First test suite", () => {
         }
       });
     });
+  });
+
+  it("Web tables1 28", () => {
+    cy.visit("/");
+    cy.contains("Tables & Data").click();
+    cy.contains("Smart Table").click();
+
+    //1 get the row by text
+    cy.get("tbody")
+      .contains("tr", "Larry")
+      .then((tableRows) => {
+        const age = 35;
+
+        cy.wrap(tableRows).find(".nb-edit").click();
+        cy.wrap(tableRows)
+          .find('[placeholder="Age"]')
+          .click()
+          .clear()
+          .type(age);
+        cy.wrap(tableRows).find(".nb-checkmark").click();
+        cy.wrap(tableRows).find("td").eq(6).should("contain", age);
+      });
+
+    //2 get row by index
+    cy.get("thead").find(".nb-plus").click();
+    cy.get("thead")
+      .find("tr")
+      .eq(2)
+      .then((tableRow) => {
+        cy.wrap(tableRow).find('[placeholder="First Name"]').type("Omrane");
+        cy.wrap(tableRow).find('[placeholder="Last Name"]').type("Chabbah");
+        cy.wrap(tableRow).find(".nb-checkmark").click();
+      });
+    cy.get("tbody tr")
+      .first()
+      .find("td")
+      .then((tableColumns) => {
+        cy.wrap(tableColumns).eq(2).should("contain", "Omrane");
+        cy.wrap(tableColumns).eq(3).should("contain", "Chabbah");
+      });
+
+    //3  Get each row validation
+    const age = [20, 30, 200];
+    cy.wrap(age).each((age) => {
+      cy.get('thead [placeholder="Age"]').clear().type(age);
+      cy.wait(1000);
+      cy.get("tbody tr").each((tableRow) => {
+        if (age == 200) {
+          cy.wrap(tableRow).should("contain", "No data found");
+        } else {
+          cy.wrap(tableRow).find("td").eq(6).should("contain", age);
+        }
+      });
+    });
+  });
+
+  it("Tooltips 30", () => {
+    cy.visit("/");
+    cy.contains("Modal & Overlays").click();
+    cy.contains("Tooltip").click();
+
+    cy.contains("nb-card", "Colored Tooltips")
+      .contains("Default")
+      .trigger("mouseover")
+      .click();
+    cy.get("nb-tooltip")
+      .should("be.visible")
+      .and("contain", "This is a tooltip");
+  });
+
+  //??????????
+  it("dilog box 30 ", () => {
+    cy.visit("/");
+    cy.contains("Tables & Data").click();
+    cy.contains("Smart Table").click();
+
+    //1
+    cy.get("tbody tr").first().find(".nb-trash").click();
+    cy.on("window:confirm", (confirm) => {
+      expect(confirm).to.equal("Are you sure you want to delete?");
+    });
+
+    // //2
+    // const stub = cy.stub();
+    // cy.on("window:confirm", stub);
+    // cy.get("tbody tr")
+    //   .first()
+    //   .find(".nb-trash")
+    //   .click()
+    //   .then(() => {
+    //     expect(stub.getCall(0)).to.be.calledWith(
+    //       "Are you sure you want to delete?"
+    //     );
+    //   });
+
+    // //3
+    // cy.get("tbody tr").first().find(".nb-trash").click();
+    // cy.on("window:confirm", () => false);
+  });
+
+  it.only("Assertions 31", () => {
+    //use Cypress documentation for more references
   });
 });
