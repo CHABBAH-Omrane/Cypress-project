@@ -7,7 +7,7 @@ describe("Test with page object 32", () => {
   beforeEach("open applica", () => {
     cy.openHomePage();
   });
-  it("verify navigation", () => {
+  it.only("verify navigation", () => {
     navigationTo.formLayoutPage();
     navigationTo.datePickerPage();
     navigationTo.smartTablePage();
@@ -15,7 +15,7 @@ describe("Test with page object 32", () => {
     navigationTo.toasterPage();
   });
 
-  it.only("should submit inline form and basic form, select tomorrow date in the calendar .... ", () => {
+  it("should submit inline form and basic form, select tomorrow date in the calendar .... ", () => {
     navigationTo.formLayoutPage();
     onFormLayoutsPage.submitInlineFormWithNameAndEmail("omrane", "chabbah");
     onFormLayoutsPage.submitBasicFormWithEmailAndPassword(
